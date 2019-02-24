@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Tarea1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="tbl_Evento">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Fecha" Type="datetime" Nullable="false" />
+    <Property Name="Activo" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="tbl_PadronAsociado">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="idExcel" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Cedula" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Estatus1" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Estatus2" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Correo" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Telefono" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Estado3" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="HoraRegistro" Type="time" Precision="7" Nullable="false" />
+    <Property Name="idEvento" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="tbl_Usuario">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="Usuario" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Contraseña" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Rol" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_tbl_PadronAsociado_tbl_Evento">
+    <End Role="tbl_Evento" Type="Self.tbl_Evento" Multiplicity="1" />
+    <End Role="tbl_PadronAsociado" Type="Self.tbl_PadronAsociado" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tbl_Evento">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="tbl_PadronAsociado">
+        <PropertyRef Name="idEvento" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Tarea1ModelStoreContainer">
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tbl_Evento" EntityType="Self.tbl_Evento" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tbl_PadronAsociado" EntityType="Self.tbl_PadronAsociado" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tbl_Usuario" EntityType="Self.tbl_Usuario" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_tbl_PadronAsociado_tbl_Evento" Association="Self.FK_tbl_PadronAsociado_tbl_Evento">
+      <End Role="tbl_Evento" EntitySet="tbl_Evento" />
+      <End Role="tbl_PadronAsociado" EntitySet="tbl_PadronAsociado" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
