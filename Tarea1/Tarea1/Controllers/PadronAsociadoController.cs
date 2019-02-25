@@ -1,9 +1,13 @@
-﻿using System;
+﻿using ExcelDataReader;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Tarea1.Models;
@@ -21,20 +25,7 @@ namespace Tarea1.Controllers
             return View(tbl_PadronAsociado.ToList());
         }
 
-        // GET: PadronAsociado/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            tbl_PadronAsociado tbl_PadronAsociado = db.tbl_PadronAsociado.Find(id);
-            if (tbl_PadronAsociado == null)
-            {
-                return HttpNotFound();
-            }
-            return View(tbl_PadronAsociado);
-        }
+
 
         // GET: PadronAsociado/Create
         public ActionResult Create()
@@ -47,86 +38,122 @@ namespace Tarea1.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,idExcel,Nombre,Cedula,Estatus1,Estatus2,Correo,Telefono,Estado3,HoraRegistro,idEvento")] tbl_PadronAsociado tbl_PadronAsociado)
+        public ActionResult Create(HttpPostedFileBase file)
         {
-            if (ModelState.IsValid)
+            if (file != null)
             {
-                db.tbl_PadronAsociado.Add(tbl_PadronAsociado);
-                db.SaveChanges();
+                if (!file.FileName.EndsWith(".xls") && !file.FileName.EndsWith(".xlsx"))
+                    return View();
+
+                var fileName = DateTime.Now.ToString("yyyyMMddHHmm.") + file.FileName.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).Last();
+                SaveFile(file, fileName);
+                UploadRecordsToDataBase(fileName);
                 return RedirectToAction("Index");
             }
 
-            ViewBag.idEvento = new SelectList(db.tbl_Evento, "id", "Nombre", tbl_PadronAsociado.idEvento);
-            return View(tbl_PadronAsociado);
+            // Tu podras decidir que hacer aqui
+            // si el archivo es nulo
+            return View();
+
         }
 
-        // GET: PadronAsociado/Edit/5
-        public ActionResult Edit(int? id)
+
+        //protected override void Dispose(bool disposing)
+        //{
+        //    if (disposing)
+        //    {
+        //        db.Dispose();
+        //    }
+        //    base.Dispose(disposing);
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult UploadFile(HttpPostedFileBase file)
+        //{
+        //    if (file != null)
+        //    {
+        //        if (!file.FileName.EndsWith(".xls") && !file.FileName.EndsWith(".xlsx"))
+        //            return View();
+
+        //        var fileName = DateTime.Now.ToString("yyyyMMddHHmm.") + file.FileName.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).Last();
+        //        SaveFile(file, fileName);
+        //        UploadRecordsToDataBase(fileName);
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    // Tu podras decidir que hacer aqui
+        //    // si el archivo es nulo
+        //    return View();
+
+        //}
+
+        private void SaveFile(HttpPostedFileBase file, string fileName)
         {
-            if (id == null)
+            var path = System.IO.Path.Combine(Server.MapPath("~/Content/Files/"), fileName);
+            var data = new byte[file.ContentLength];
+            file.InputStream.Read(data, 0, file.ContentLength);
+
+            using (var sw = new System.IO.FileStream(path, System.IO.FileMode.Create))
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                sw.Write(data, 0, data.Length);
             }
-            tbl_PadronAsociado tbl_PadronAsociado = db.tbl_PadronAsociado.Find(id);
-            if (tbl_PadronAsociado == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.idEvento = new SelectList(db.tbl_Evento, "id", "Nombre", tbl_PadronAsociado.idEvento);
-            return View(tbl_PadronAsociado);
         }
 
-        // POST: PadronAsociado/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,idExcel,Nombre,Cedula,Estatus1,Estatus2,Correo,Telefono,Estado3,HoraRegistro,idEvento")] tbl_PadronAsociado tbl_PadronAsociado)
+        private void UploadRecordsToDataBase(string fileName)
         {
-            if (ModelState.IsValid)
+            var records = new List<tbl_PadronAsociado>();
+            using (var stream = System.IO.File.Open(Path.Combine(Server.MapPath("~/Content/Files/"), fileName), FileMode.Open, FileAccess.Read))
             {
-                db.Entry(tbl_PadronAsociado).State = EntityState.Modified;
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    while (reader.Read())
+                    {
+                        records.Add(new tbl_PadronAsociado
+                        {
+
+                            idExcel = reader.GetString(0),
+                            Nombre = reader.GetString(1),
+                            Cedula = reader.GetString(2),
+                            Estatus1 = reader.GetString(3),
+                            Estatus2 = reader.GetString(4),
+                            Correo = reader.GetString(5),
+                            Telefono = reader.GetString(6),
+                            Estado3 = "",
+                        });
+                    }
+                    db.Configuration.ValidateOnSaveEnabled = false;
+                    db.tbl_PadronAsociado.AddRange(records);
+                    db.SaveChanges();
+                }
+            }
+
+
+
+            try
+            {
                 db.SaveChanges();
-                return RedirectToAction("Index");
             }
-            ViewBag.idEvento = new SelectList(db.tbl_Evento, "id", "Nombre", tbl_PadronAsociado.idEvento);
-            return View(tbl_PadronAsociado);
-        }
-
-        // GET: PadronAsociado/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
+            catch (DbEntityValidationException ex)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            tbl_PadronAsociado tbl_PadronAsociado = db.tbl_PadronAsociado.Find(id);
-            if (tbl_PadronAsociado == null)
-            {
-                return HttpNotFound();
-            }
-            return View(tbl_PadronAsociado);
-        }
+                StringBuilder sb = new StringBuilder();
 
-        // POST: PadronAsociado/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            tbl_PadronAsociado tbl_PadronAsociado = db.tbl_PadronAsociado.Find(id);
-            db.tbl_PadronAsociado.Remove(tbl_PadronAsociado);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+                foreach (var failure in ex.EntityValidationErrors)
+                {
+                    sb.AppendFormat("{0} failed validation\n", failure.Entry.Entity.GetType());
+                    foreach (var error in failure.ValidationErrors)
+                    {
+                        sb.AppendFormat("- {0} : {1}", error.PropertyName, error.ErrorMessage);
+                        sb.AppendLine();
+                    }
+                }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
+                throw new DbEntityValidationException(
+                    "Entity Validation Failed - errors follow:\n" +
+                    sb.ToString(), ex
+                ); // Add the original exception as the innerException
             }
-            base.Dispose(disposing);
+
         }
     }
 }
