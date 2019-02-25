@@ -17,7 +17,7 @@ namespace Tarea1.Controllers
         // GET: Usuario
         public ActionResult Index()
         {
-            return View(db.tbl_Usuario.ToList());
+            return View();
         }
 
         // GET: Usuario/Details/5
@@ -39,6 +39,26 @@ namespace Tarea1.Controllers
         public ActionResult Create()
         {
             return View();
+        }
+
+        // GET: Usuario/Registrar
+        public ActionResult Registrar()
+        {
+            
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Registrar([Bind(Include = "Usuario,Contraseña")] tbl_Usuario tbl_Usuario)
+        {
+            if (ModelState.IsValid)
+            {
+                db.tbl_Usuario.Add(tbl_Usuario);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(tbl_Usuario);
         }
 
         // POST: Usuario/Create

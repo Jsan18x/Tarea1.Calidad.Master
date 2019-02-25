@@ -44,44 +44,45 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.idExcel)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Nombre)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Cedula)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Estatus1)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Estatus2)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Correo)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Telefono)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Estado3)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.HoraRegistro)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.tbl_Evento.Nombre)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.idExcel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cedula)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estatus1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estatus2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Correo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telefono)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado3)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HoraRegistro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.tbl_Evento.Nombre)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.id })
+            </td>
+        </tr>
+    }
 
 </table>
