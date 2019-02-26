@@ -44,21 +44,24 @@ namespace Tarea1.Controllers
         // GET: Usuario/Registrar
         public ActionResult Registrar()
         {
-            
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Registrar([Bind(Include = "Usuario,Contraseña")] tbl_Usuario tbl_Usuario)
+        public ActionResult Registrar([Bind(Include = "Usuario,Contraseña")] tbl_Usuario tbl_Usuario1)
         {
             if (ModelState.IsValid)
             {
-                db.tbl_Usuario.Add(tbl_Usuario);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var query = db.tbl_Usuario.Where(s => s.Usuario == tbl_Usuario1.Usuario);
+                tbl_Usuario user = query.ToList().ElementAt(0);
+                if (user.Contraseña == tbl_Usuario1.Contraseña)
+                {
+                    return RedirectToAction("Index", "Evento");
+                }  
             }
 
-            return View(tbl_Usuario);
+            return View();
         }
 
         // POST: Usuario/Create

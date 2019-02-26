@@ -22,8 +22,8 @@ namespace Tarea1.Models
     
         public int id { get; set; }
         public string Nombre { get; set; }
-        public System.DateTime Fecha { get; set; }
-        public bool Activo { get; set; }
+        public Nullable<System.DateTime> Fecha { get; set; }
+        public Nullable<bool> Activo { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tbl_PadronAsociado> tbl_PadronAsociado { get; set; }

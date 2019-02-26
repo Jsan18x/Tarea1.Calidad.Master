@@ -17,6 +17,7 @@ namespace Tarea1.Controllers
         // GET: Evento
         public ActionResult Index()
         {
+            
             return View(db.tbl_Evento.ToList());
         }
 

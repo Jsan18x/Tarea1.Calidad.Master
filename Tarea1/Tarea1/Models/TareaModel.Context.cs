@@ -25,7 +25,6 @@ namespace Tarea1.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<tbl_Evento> tbl_Evento { get; set; }
         public virtual DbSet<tbl_PadronAsociado> tbl_PadronAsociado { get; set; }
         public virtual DbSet<tbl_Usuario> tbl_Usuario { get; set; }

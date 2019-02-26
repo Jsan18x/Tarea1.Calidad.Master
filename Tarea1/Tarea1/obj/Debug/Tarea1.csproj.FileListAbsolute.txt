@@ -86,3 +86,5 @@ C:\Users\Nando\Documents\tarea\Tarea1\Tarea1\bin\Antlr3.Runtime.pdb
 C:\Users\Nando\Documents\tarea\Tarea1\Tarea1\bin\Newtonsoft.Json.xml
 C:\Users\Nando\Documents\tarea\Tarea1\Tarea1\obj\Debug\Tarea1.dll
 C:\Users\Nando\Documents\tarea\Tarea1\Tarea1\obj\Debug\Tarea1.pdb
+C:\Users\Nando\Documents\tarea\Tarea1\Tarea1\bin\ExcelDataReader.dll
+C:\Users\Nando\Documents\tarea\Tarea1\Tarea1\bin\ExcelDataReader.xml

@@ -23,7 +23,7 @@ namespace Tarea1.Models
         public string Correo { get; set; }
         public string Telefono { get; set; }
         public string Estado3 { get; set; }
-        public System.TimeSpan HoraRegistro { get; set; }
+        public Nullable<System.TimeSpan> HoraRegistro { get; set; }
         public int idEvento { get; set; }
     
         public virtual tbl_Evento tbl_Evento { get; set; }
