@@ -27,8 +27,8 @@ namespace Tarea1.Controllers
 
 
 
-        // GET: PadronAsociado/Create
-        public ActionResult Create()
+        // GET: PadronAsociado/Create/5
+        public ActionResult Create(int id)
         {
             ViewBag.idEvento = new SelectList(db.tbl_Evento, "id", "Nombre");
             return View();
@@ -38,7 +38,7 @@ namespace Tarea1.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public ActionResult Create(HttpPostedFileBase file)
+        public ActionResult Create(HttpPostedFileBase file, int id)
         {
             if (file != null)
             {
@@ -47,7 +47,7 @@ namespace Tarea1.Controllers
 
                 var fileName = DateTime.Now.ToString("yyyyMMddHHmm.") + file.FileName.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).Last();
                 SaveFile(file, fileName);
-                UploadRecordsToDataBase(fileName);
+                UploadRecordsToDataBase(fileName,id);
                 return RedirectToAction("Index");
             }
 
@@ -56,38 +56,7 @@ namespace Tarea1.Controllers
             return View();
 
         }
-
-
-        //protected override void Dispose(bool disposing)
-        //{
-        //    if (disposing)
-        //    {
-        //        db.Dispose();
-        //    }
-        //    base.Dispose(disposing);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult UploadFile(HttpPostedFileBase file)
-        //{
-        //    if (file != null)
-        //    {
-        //        if (!file.FileName.EndsWith(".xls") && !file.FileName.EndsWith(".xlsx"))
-        //            return View();
-
-        //        var fileName = DateTime.Now.ToString("yyyyMMddHHmm.") + file.FileName.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).Last();
-        //        SaveFile(file, fileName);
-        //        UploadRecordsToDataBase(fileName);
-        //        return RedirectToAction("Index");
-        //    }
-
-        //    // Tu podras decidir que hacer aqui
-        //    // si el archivo es nulo
-        //    return View();
-
-        //}
-
+        
         private void SaveFile(HttpPostedFileBase file, string fileName)
         {
             var path = System.IO.Path.Combine(Server.MapPath("~/Content/Files/"), fileName);
@@ -100,7 +69,7 @@ namespace Tarea1.Controllers
             }
         }
 
-        private void UploadRecordsToDataBase(string fileName)
+        private void UploadRecordsToDataBase(string fileName,int idEvento)
         {
             var records = new List<tbl_PadronAsociado>();
             using (var stream = System.IO.File.Open(Path.Combine(Server.MapPath("~/Content/Files/"), fileName), FileMode.Open, FileAccess.Read))
@@ -120,11 +89,12 @@ namespace Tarea1.Controllers
                             Correo = reader.GetString(5),
                             Telefono = reader.GetString(6),
                             Estado3 = "",
+                            idEvento = idEvento
                         });
                     }
                     db.Configuration.ValidateOnSaveEnabled = false;
                     db.tbl_PadronAsociado.AddRange(records);
-                    db.SaveChanges();
+                    //db.SaveChanges();
                 }
             }
 

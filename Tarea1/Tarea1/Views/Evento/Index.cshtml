@@ -35,9 +35,10 @@
                 @Html.DisplayFor(modelItem => item.Activo)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-                @Html.ActionLink("Details", "Details", new { id=item.id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.id })
+                @Html.ActionLink("Agregar Padron", "Create", "PadronAsociado", new {id = item.id}, null)|
+                @Html.ActionLink("Edit", "Edit", new {id = item.id}) |
+                @Html.ActionLink("Details", "Details", new {id = item.id}) |
+                @Html.ActionLink("Delete", "Delete", new {id = item.id})
             </td>
         </tr>
     }
@@ -45,16 +46,3 @@
     
 
 </table>
-
-<div class="card-deck">
-    @foreach (var item in Model)
-    {
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">@Html.DisplayFor(modelItem => item.Nombre)</h5>
-                <p class="card-text">@Html.DisplayFor(modelItem => item.Fecha)</p>
-                <p class="card-text"><small class="text-muted">@Html.DisplayFor(modelItem => item.Activo)</small></p>
-            </div>
-        </div>
-    }
-</div>

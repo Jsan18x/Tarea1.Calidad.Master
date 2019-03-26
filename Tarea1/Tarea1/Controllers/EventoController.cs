@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Tarea1.Models;
 
 namespace Tarea1.Controllers
@@ -57,6 +58,38 @@ namespace Tarea1.Controllers
             }
 
             return View(tbl_Evento);
+        }
+
+        // GET: Evento/Edit/5
+        public ActionResult AgregarPadron(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            tbl_Evento tbl_Evento = db.tbl_Evento.Find(id);
+            if (tbl_Evento == null)
+            {
+                return HttpNotFound();
+            }
+            //return RedirectToAction("Create", new RouteValueDictionary(
+              //  new { controller = PatronAsociado, action = "Main", Id = Id }));
+            return View();
+        }
+
+        // POST: Evento/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AgregarPadron(int id)
+        {
+            if (ModelState.IsValid)
+            {
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(id);
         }
 
         // GET: Evento/Edit/5
